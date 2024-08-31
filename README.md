@@ -4,7 +4,7 @@ This program provides a graphical interface to edit .anm files used in the game 
 
 ## Features
 - **Open File**: Open .anm files using a file dialog.
-- **Drag and Drop**: Supports dragging and dropping .anm files to open them directly.
+- **Drag and Drop**: Supports dragging and dropping .anm files to open them directly, either from the app or dragging the file into the executable file.
 - **Color Navigation**: Navigate between colors found in the file.
 - **Select Color**: Choose a new color using a color picker dialog.
 - **Change Color by Hex Code**: Enter a hexadecimal code to change the current color.
