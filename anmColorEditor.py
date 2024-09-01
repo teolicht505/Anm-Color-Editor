@@ -31,6 +31,14 @@ class ColorSelectorApp:
         self.file_menu.add_command(label="Exit", command=root.quit)
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
 
+        # Add an Options menu
+        self.change_unique_colors = 0
+        self.options_menu = tk.Menu(self.menu_bar, tearoff=0)
+        self.options_menu.add_checkbutton(label="Change unique colors",
+                                          variable=self.change_unique_colors,
+                                          command=self.toggle_change_unique_colors)
+        self.menu_bar.add_cascade(label="Options", menu=self.options_menu)
+
         self.colors = colors
         self.current_color_index = 0
 
@@ -79,6 +87,10 @@ class ColorSelectorApp:
         self.root.lift()
         self.root.focus_force()
 
+    def toggle_change_unique_colors(self):
+        """Handle the toggle of 'Change unique colors'."""
+        self.change_unique_colors = 0 if (self.change_unique_colors) else 1
+
     def drop(self, event):
         """Handle file drop."""
         global file_path
@@ -106,23 +118,33 @@ class ColorSelectorApp:
             self.color_frame.config(bg=self.colors[self.current_color_index])
             self.index_label.config(text="{:d} / {:d}".format(self.current_color_index + 1, len(self.colors)))
 
+    def apply_color_change(self, color):
+        """Applies color change depending if you have the change_unique_color option ON/OFF."""
+        if (self.change_unique_colors):
+            original_color = self.colors[self.current_color_index]
+            for i in range(len(self.colors)):
+                if (self.colors[i] == original_color):
+                    self.colors[i] = color
+        else:
+            self.colors[self.current_color_index] = color
+
+        self.color_frame.config(bg=color)
+
     def select_color(self):
         """Open a color chooser dialog to select a new color."""
         color = colorchooser.askcolor(title="Select a color")
         if color[1] is not None:
-            self.colors[self.current_color_index] = color[1]
-            self.color_frame.config(bg=color[1])
+            self.apply_color_change(color[1])
+
 
     def change_color_hex(self):
         """Allow the user to input a hex color code."""
         hex_color = simpledialog.askstring("Change Color (#RRGGBB)", "Input value with format #RRGGBB/RRGGBB:")
         if hex_color and len(hex_color) == 7 and hex_color[0] == '#' and hex_color[1:].isnumeric():
-            self.colors[self.current_color_index] = hex_color
-            self.color_frame.config(bg=hex_color)
+            self.apply_color_change(hex_color)
         elif hex_color and len(hex_color) == 6 and hex_color.isnumeric():
             hex_color = f"#{hex_color}"
-            self.colors[self.current_color_index] = hex_color
-            self.color_frame.config(bg=hex_color)
+            self.apply_color_change(hex_color)
         elif hex_color != None:
             messagebox.showerror("Error", "Please input a valid color with format: #RRGGBB/RRGGBB")
 
