@@ -140,9 +140,18 @@ class ColorSelectorApp:
     def change_color_hex(self):
         """Allow the user to input a hex color code."""
         hex_color = simpledialog.askstring("Change Color (#RRGGBB)", "Input value with format #RRGGBB/RRGGBB:")
-        if hex_color and len(hex_color) == 7 and hex_color[0] == '#' and hex_color[1:].isnumeric():
+
+        def is_hex(num):
+            """Quick check to determine if number is a hexadecimal."""
+            try:
+                int(num, 16)
+                return True
+            except ValueError:
+                return False
+
+        if hex_color and len(hex_color) == 7 and hex_color[0] == '#' and is_hex(hex_color[1:]):
             self.apply_color_change(hex_color)
-        elif hex_color and len(hex_color) == 6 and hex_color.isnumeric():
+        elif hex_color and len(hex_color) == 6 and is_hex(hex_color):
             hex_color = f"#{hex_color}"
             self.apply_color_change(hex_color)
         elif hex_color != None:
