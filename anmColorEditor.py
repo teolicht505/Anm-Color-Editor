@@ -5,7 +5,11 @@ import sys
 from tkinterdnd2 import TkinterDnD, DND_FILES
 
 # Global variables
-pattern = b'\x02\x1c\x01\x00\x00\x00\x00\x00'
+pattern = b''.join([
+    b'\xA2\x01\x00\x00\x7C\x00\x00\x00\x2D\x00\x02\x1C\x01\x00\x00\x00',
+    b'\x00\x00'])
+
+
 lines = []
 colors = []
 file_path = None
@@ -222,22 +226,20 @@ def change_endianness(data, endianess):
 
 def find_pattern(file_path, pattern):
     """Find all occurrences of the specified pattern in the file."""
-    offset = 44  # Number of bytes to skip before comparing the next 4 bytes
+    pattern_length = len(pattern) 
+    offset = 44  # Number of bytes to skip before comparing the next block
 
     with open(file_path, "rb") as file:
-        while True:
-            block = file.read(8)  # Read 16 bytes
-            if len(block) < 8:
-                break  # End of file reached
+        file_content = file.read()
 
-            if pattern in block:  # Check if the first 4 bytes match the pattern
-                current_block = file.read(4)
-                file.seek(offset, 1)  # Skip 52 bytes
-                next_block = file.read(4)  # Read the next 4 bytes
+        # Loop through each byte in the file
+        for i in range(len(file_content) - pattern_length + 1):
+            if file_content[i:i + pattern_length] == pattern:
+                # Save the color position
+                lines.append(i+pattern_length)
 
-                if next_block == current_block:  # Check if the next 4 bytes match the pattern
-                    lines.append(file.tell() - 52)
-                file.seek(4, 1)
+                # Move the index forward by the offset, skipping unnecessary bytes
+                i += offset
 
 def hex_to_int(hex_str):
     """Convert a hexadecimal string to an integer."""
