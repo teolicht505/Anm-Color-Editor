@@ -23,6 +23,3 @@ This program provides a graphical interface to edit .anm files used in the game 
 5. Select a new color using the "Select color" button or enter a hexadecimal code with the "Input color (#RRGGBB)" button.
 6. To save changes, click on "Save Colors".
 7. Drag and drop a new file or select it with the "File" menu to edit another file.
-
-## Known issues
-The file "fade_if_time_1b.anm" missdetects a color, making it to be saved incorrectly. This issue could cause the game to skip this animation or result in other issues. Until this problem is resolved, you will need to manually edit the colors in this file.
